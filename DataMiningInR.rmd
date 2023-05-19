@@ -1,0 +1,38 @@
+---
+title: "Data_Mining"
+author: "MosaRahimi"
+date: "2023-05-19"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+require(tidyverse)
+pacman::p_load(
+  janitor,
+  magrittr,
+  pacman,
+  psych,
+  rio
+)
+# (.packages())
+
+```
+
+```{r}
+df <- read.csv(file = "Ex_Files_Data_Science_R/Exercise Files/data/optdigits.csv")
+
+```
+
+```{r}
+data <- import(file = "Ex_Files_Data_Science_R/Exercise Files/data/optdigits.csv") %>% as_tibble()
+
+```
+
