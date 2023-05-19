@@ -15,6 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 require(tidyverse)
+require(tidymodels)
 pacman::p_load(
   janitor,
   magrittr,
@@ -22,6 +23,8 @@ pacman::p_load(
   psych,
   rio
 )
+
+
 # (.packages())
 
 ```
@@ -34,5 +37,151 @@ df <- read.csv(file = "Ex_Files_Data_Science_R/Exercise Files/data/optdigits.csv
 ```{r}
 data <- import(file = "Ex_Files_Data_Science_R/Exercise Files/data/optdigits.csv") %>% as_tibble()
 
+```
+
+## Principal Component Analysis
+```{r}
+df <- df %>% 
+  rename(y = X0.26) %>% mutate(y = as_factor(y))
+
+df %>%
+  pull(y) %>%
+  fct_count()
+
+```
+
+```{r}
+df <- df %>% filter(y == 1 | y == 3 | y == 6) %>% 
+  mutate(y = fct_drop(y))
+
+```
+
+remove_constant from janitors remove the corner digits (pixel digits)
+
+```{r}
+df <- df %>% remove_constant()
+
+```
+
+
+```{r}
+set.seed(1)
+
+df <- df %>% 
+  mutate(id = row_number()) %>% 
+  select(id, everything())
+
+```
+
+
+I can see the professor uses older models to split the data into training and test sets, while the tidy models uses new method 
+
+```{r}
+data_split <- df %>% rsample::initial_split(prop = 0.8,strata = id)
+
+training_data <- data_split %>% rsample::training() %>% select(-id)
+testing_data <- data_split %>% rsample::testing() %>% select(-id)
+
+```
+
+
+```{r}
+
+pc_analysis <- training_data %>% select(-y) %>% 
+  stats::prcomp(
+    center = TRUE,
+    scale = TRUE,
+  )
+
+```
+
+
+```{r}
+pc_analysis %>% summary()
+
+```
+
+
+```{r}
+pc_analysis %>% plot(main = 'Eigenvalues')
+
+```
+
+
+```{r}
+pc_analysis %>% 
+  ggbiplot::ggbiplot(
+    color=training_data$y,
+    groups = factor(training_data$y)
+  )
+
+```
+
+
+```{r}
+newdata <- pc_analysis %>% 
+  stats::predict(testing_data %>% select(-y))
+
+```
+
+
+```{r}
+testpc <- pc_analysis
+testpc$x <- newdata
+
+```
+
+
+```{r}
+plot(
+  pc_analysis$x[,c(1:4)],
+  col = "gray"
+)
+
+points(
+  newdata[,c(1:4)],
+  col = "red"
+)
+
+```
+
+
+
+## Linear Dimension Reduction 
+```{r}
+
+
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
 ```
 
